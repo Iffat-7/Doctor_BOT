@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Doctor Nova</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background-color: #2e7d32;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+    #chatbox {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: white;
+    }
+    #chatbox div {
+      margin: 10px 0;
+    }
+    #chatbox b {
+      color: #1b5e20;
+    }
+    footer {
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      background: #f1f8e9;
+    }
+    #userMessage {
+      flex-grow: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid #4caf50;
+    }
+    button {
+      padding: 12px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+
+<header>🩺 Dr. Nova – Your AI Medical Assistant</header>
+
+<div id="chatbox">
+  <div><b>Dr. Nova:</b> Hello! What are you feeling today?</div>
+</div>
+
+<footer>
+  <input type="text" id="userMessage" placeholder="Type your symptoms..." />
+  <button onclick="sendMessage()">Send</button>
+</footer>
+
+<script>
+  function sendMessage() {
+    const input = document.getElementById("userMessage");
+    const msg = input.value.trim();
+    if (msg === "") return;
+
+    const chatbox = document.getElementById("chatbox");
+    chatbox.innerHTML += `<div><b>You:</b> ${msg}</div>`;
+
+    fetch("/get_response", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message: msg})
+    })
+    .then(res => res.json())
+    .then(data => {
+      const reply = data.text;
+      chatbox.innerHTML += `<div><b>Dr. Nova:</b> ${reply}</div>`;
+      const speak = new SpeechSynthesisUtterance(reply);
+      speak.lang = "en-US";
+      window.speechSynthesis.speak(speak);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    });
+
+    input.value = "";
+  }
+</script>
+
+</body>
+</html>
