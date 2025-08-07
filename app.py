@@ -145,7 +145,7 @@ def get_response(msg):
     msg = msg.lower()
 
     if any(word in msg for word in greetings):
-        return {"text": "Hello! I'm Dr. Nova. What symptoms are you experiencing today?"}
+        return {"text": "Hello! I'm Dr. Ella. What symptoms are you experiencing today?"}
     
     if any(word in msg for word in goodbyes):
         return {"text": "You're welcome! Take care and get well soon."}
